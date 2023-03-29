@@ -1,9 +1,9 @@
+import mongoose from "mongoose";
 import { Sequelize } from "sequelize";
-import { Profil } from "../entities/Profil";
-import { User } from "../entities/User";
 
 class Database {
   
+  //For SQL Database(PostgreSQL)
   public sequelize: Sequelize | undefined;
 
   private postgres_db = process.env.POSTGRES_DB as string;
@@ -12,11 +12,9 @@ class Database {
   private postgres_user = process.env.POSTGRES_USER as string;
   private postgres_password = process.env.POSTGRES_PASSWORD as string;
 
-  constructor() {
-    this.connectToPostgreSQL()
-  }
+  constructor() {}
 
-  private async connectToPostgreSQL(){
+  public async connectToPostgreSQL(){
     this.sequelize = new Sequelize({
       database: this.postgres_db,
       username: this.postgres_user,
@@ -30,12 +28,30 @@ class Database {
       .authenticate()
       .then(() => {
         console.log(
-          "Connection to PostgreSQL has been etablished successfully."
+          "Connection à la base de donnée PostgreSQL établie avec succes."
         );
       })
       .catch((error) => {
         console.error(
           "Une erreur est survenue lors de la connection à la base de donnée PostgreSQL : => " +
+            error
+        );
+      });
+  }
+
+  public async connectToMongoDB(){
+
+    const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_PATH, MONGODB_PORT, MONGODB_DBNAME } = process.env
+    
+    mongoose.connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_PATH}:${MONGODB_PORT}/${MONGODB_DBNAME}`)
+      .then(() => {
+        console.log(
+          "Connection à la base de donnée MongoDB établie avec succes."
+        );
+      })
+      .catch((error) => {
+        console.error(
+          "Une erreur est survenue lors de la connection à la base de donnée MongoDB : => " +
             error
         );
       });
