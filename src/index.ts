@@ -3,7 +3,7 @@ import App from "./app"
 
 dotenv.config({})
 
-const app = new App().app
+const app = new App([]).app
 
 const port = process.env.SERVER_PORT || 8181
 

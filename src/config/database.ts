@@ -41,9 +41,11 @@ class Database {
 
   public async connectToMongoDB(){
 
-    const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_PATH, MONGODB_PORT, MONGODB_DBNAME } = process.env
+    const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_PATH, MONGODB_PORT, MONGODB_DBNAME } = process.env;
+
+    // console.log(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_PATH}:${MONGODB_PORT}/${MONGODB_DBNAME}`);
     
-    mongoose.connect(`mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_PATH}:${MONGODB_PORT}/${MONGODB_DBNAME}`)
+    mongoose.connect(`mongodb://${MONGODB_PATH}:${MONGODB_PORT}/${MONGODB_DBNAME}`)
       .then(() => {
         console.log(
           "Connection à la base de donnée MongoDB établie avec succes."

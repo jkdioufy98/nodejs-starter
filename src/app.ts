@@ -1,16 +1,22 @@
 import express, { Application, Request, Response} from "express";
 import Database from "./config/database";
 import cors from 'cors';
+import Controller from "./utils/interfaces/controller.interface";
+import ErrorMiddleware from "./middlewares/error.middleware";
 
 
 class App {
 
     public app: Application
 
-    constructor() {
+    constructor(controllers: Controller[]) {
+        //Initialisation de l'application express
         this.app = express();
+
         this.databaseMongoDBSync();
-        this.routes();
+        this.initialiseMiddlewares();
+        this.initialiseErrorHandling()
+        this.initialiseControllers(controllers)
     }
 
 
@@ -21,21 +27,15 @@ class App {
     }
 
     //Initialisation des controlleurs
-    protected initialiseControllers(controllers: []){
-        controllers.forEach((controller) => {
-            this.app.use('/api')
+    protected initialiseControllers(controllers: Controller[]){
+        controllers.forEach((controller: Controller) => {
+            this.app.use('/nodejs-starter/api/v1', controller.router)
         })
     }
 
     //Initialisation des erreurs
-    protected initialiseErrors(){
-        // this.app.use(ErrorMiddleware())
-    }
-
-    protected routes(): void {
-        this.app.route('/').get((request: Request, response: Response) => {
-            response.send("NodeJS Starter !")
-        })
+    protected initialiseErrorHandling(){
+        this.app.use(ErrorMiddleware)
     }
 
     //Database synchronisation PostgreSQL
