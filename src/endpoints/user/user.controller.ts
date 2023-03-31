@@ -3,7 +3,7 @@ import validationMiddleware from "../../middlewares/validation.middleware";
 import HttpException from "../../utils/exceptions/http.exception";
 import Controller from "../../utils/interfaces/controller.interface";
 import UserService from "./user.service";
-import validate from './user.validation'
+import validate from "./user.validation"
 
 class UserController implements Controller{
     public path = "/users";
@@ -17,7 +17,11 @@ class UserController implements Controller{
     private initialiseRoutes(): void{
         this.router.post(
             `${this.path}`,
-            validationMiddleware(validate.create),
+            validationMiddleware(validate.register),
+            this.create),
+        this.router.post(
+            `${this.path}`,
+            validationMiddleware(validate.register),
             this.create)
     }
 

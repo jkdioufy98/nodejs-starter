@@ -9,6 +9,8 @@ export default interface User extends Document{
     status: boolean;
     phone: string;
     address: string;
+    
+    isValidPassword(password: string): boolean;
 }
 
 export enum ERole{

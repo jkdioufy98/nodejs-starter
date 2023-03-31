@@ -24,7 +24,6 @@ class App {
     protected initialiseMiddlewares(){
         this.app.use(cors());
         this.app.use(express.json());
-        this.app.use(express.urlencoded({extended: false}))
     }
 
     //Initialisation des controlleurs
@@ -37,12 +36,6 @@ class App {
     //Initialisation des erreurs
     protected initialiseErrorHandling(){
         this.app.use(ErrorMiddleware)
-    }
-
-    //Database synchronisation PostgreSQL
-    protected databasePostgreSQLSync(): void {
-        const database = new Database();
-        database.sequelize?.sync()
     }
 
     //Database synchronisation MongoDB

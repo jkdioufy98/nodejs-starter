@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import User, { ERole } from "./user.interface";
+import bcrypt from 'bcrypt';
 
 const UserSchema = new Schema({
     firstName: {
@@ -12,11 +13,12 @@ const UserSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        trim: true
     },
     password: {
         type: String,
-        required: true
     },
     firstLog: {
         type: Boolean,
@@ -37,8 +39,32 @@ const UserSchema = new Schema({
     role: {
         type: String,
         enum: [ERole.SUPER_ADMIN],
-        default: ERole.SUPER_ADMIN
-    }
-},{timestamps: true})
+        default: ERole.SUPER_ADMIN,
+        required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
+},{timestamps: true});
+
+
+UserSchema.pre<User>('save', async function(next) {
+
+    if(!this.isModified())
+        return next();
+
+    const hash = await bcrypt.hash(this.password,10);
+
+    this.password = hash;
+
+    next()
+    
+})
+
+UserSchema.methods.isValidPassword = async function(password: string): Promise<Error | boolean>{
+    return await bcrypt.compare(password, this.password)
+}
+
 
 export default model<User>('User', UserSchema);
