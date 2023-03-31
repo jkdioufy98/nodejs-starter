@@ -36,8 +36,8 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
-        required: true,
-        enum: [ERole.SUPER_ADMIN]
+        enum: [ERole.SUPER_ADMIN],
+        default: ERole.SUPER_ADMIN
     }
 },{timestamps: true})
 

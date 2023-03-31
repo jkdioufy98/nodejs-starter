@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rimraf build && tsc",
     "dev": "npm run build && nodemon ./build/index.js",
+    "start": "tsc-watch --onSuccess \"nodemon ./build/index.js\"",
     "start-dev": "tsc && npm run dev"
   },
   "author": "Jules Ko DIOUF",
@@ -13,9 +14,14 @@
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.0",
     "@types/node": "^18.15.10",
+    "@types/supertest": "^2.0.12",
+    "jest": "^29.5.0",
     "nodemon": "^2.0.22",
+    "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
+    "tsc-watch": "^6.0.0",
     "typescript": "^5.0.2"
   },
   "dependencies": {

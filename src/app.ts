@@ -1,4 +1,4 @@
-import express, { Application, Request, Response} from "express";
+import express, { Application} from "express";
 import Database from "./config/database";
 import cors from 'cors';
 import Controller from "./utils/interfaces/controller.interface";
@@ -15,8 +15,8 @@ class App {
 
         this.databaseMongoDBSync();
         this.initialiseMiddlewares();
-        this.initialiseErrorHandling()
-        this.initialiseControllers(controllers)
+        this.initialiseErrorHandling();
+        this.initialiseControllers(controllers);
     }
 
 
@@ -24,12 +24,13 @@ class App {
     protected initialiseMiddlewares(){
         this.app.use(cors());
         this.app.use(express.json());
+        this.app.use(express.urlencoded({extended: false}))
     }
 
     //Initialisation des controlleurs
     protected initialiseControllers(controllers: Controller[]){
         controllers.forEach((controller: Controller) => {
-            this.app.use('/nodejs-starter/api/v1', controller.router)
+            this.app.use('/nodejs-starter-v1', controller.router)
         })
     }
 
