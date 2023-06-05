@@ -62,8 +62,8 @@ UserSchema.pre<User>('save', async function(next) {
     
 })
 
-UserSchema.methods.isValidPassword = async function(password: string): Promise<Error | boolean>{
-    return await bcrypt.compare(password, this.password)
+UserSchema.methods.isIdenticalPassword = async function(password: string): Promise<Error | boolean>{
+    return await bcrypt.compare(password, this.password);
 }
 
 

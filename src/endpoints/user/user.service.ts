@@ -8,25 +8,34 @@ class UserService{
     /**
      * Service de création d'un nouveau utilisateur
      */
-    public async create(firstName: string,lastName: string,email: string,password: string,firstLog: boolean,status: boolean,phone: string,address: string): Promise<User> {
+    public async create(firstName: string,lastName: string,email: string,password: string,phone: string,address: string): Promise<User> {
         try {
+
+            const existUser = await this.user.findOne({email: email});
+
+            if(existUser)
+                throw new Error("Un utilisateur avec cette adresse email existe déjà.");
+
             const user = await this.user.create({
                 firstName,
                 lastName,
                 email,
                 password,
-                firstLog,
-                status,
                 phone,
                 address
             })
 
-            return user
+            return user._id;
         } catch (error) {
             throw new Error("Unable to create the user");
         }
     }
 
+
+
+    /**
+     * Service de connection d'un untilisateur
+     */
     public async login(email: string, password: string): Promise<string | Error>{
 
         try {
@@ -36,8 +45,8 @@ class UserService{
             if(!user)
                 throw new Error("Unable to find user with this mail in database.")
 
-            if(await !user.isValidPassword(password))
-                throw new Error("Wrong Login/Password");
+            if(await !user.isIdenticalPassword(password))
+                throw new Error("Login/Password incorrect.");
                 
             return token.generateJwtToken(user);
             

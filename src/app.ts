@@ -1,8 +1,9 @@
-import express, { Application} from "express";
+import express, { Application } from "express";
 import Database from "./config/database";
 import cors from 'cors';
 import Controller from "./utils/interfaces/controller.interface";
 import ErrorMiddleware from "./middlewares/error.middleware";
+import authMiddleware from "./middlewares/authenticated.middleware";
 
 
 class App {
@@ -27,9 +28,10 @@ class App {
     }
 
     //Initialisation des controlleurs
-    protected initialiseControllers(controllers: Controller[]){
-        controllers.forEach((controller: Controller) => {
-            this.app.use('/nodejs-starter-v1', controller.router)
+    protected initialiseControllers(controllers: Controller[]){        
+        
+        controllers.forEach((controller: Controller) => {                   
+            controller.path !== "/users" ? this.app.use('/nodejs-starter-v1', authMiddleware, controller.router):this.app.use('/nodejs-starter-v1', controller.router);
         })
     }
 

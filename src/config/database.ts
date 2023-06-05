@@ -13,7 +13,7 @@ class Database {
   private postgres_password = process.env.POSTGRES_PASSWORD as string;
 
   constructor() {}
-
+  
   public async connectToPostgreSQL(){
     this.sequelize = new Sequelize({
       database: this.postgres_db,

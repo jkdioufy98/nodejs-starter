@@ -9,8 +9,9 @@ export default interface User extends Document{
     status: boolean;
     phone: string;
     address: string;
+    role: string;
     
-    isValidPassword(password: string): boolean;
+    isIdenticalPassword(password: string): Promise<Error | boolean>;
 }
 
 export enum ERole{
