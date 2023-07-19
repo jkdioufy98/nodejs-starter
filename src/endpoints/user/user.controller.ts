@@ -5,6 +5,7 @@ import Controller from "../../utils/interfaces/controller.interface";
 import UserService from "./user.service";
 import validate from "./user.validation";
 import authMiddleware from "../../middlewares/authenticated.middleware";
+import errorMiddleware from "../../middlewares/error.middleware";
 
 class UserController implements Controller{
     public path = "/users";
@@ -52,11 +53,14 @@ class UserController implements Controller{
 
             response.status(200).json({
                 status: 200,
-                payload: token,
+                payload: {
+                    accessToken: token,
+                    refreshToken: ""
+                },
                 message: "Utilisateur connecté avec succès."
             })
-        } catch (error: any) {
-            next(new HttpException(500, "Une erreur est survenue lors de la connection ! error: => " + error.message)) 
+        } catch (error: any) {            
+            errorMiddleware(new HttpException(error.status, error.message), request, response, next)
         }
     }
 

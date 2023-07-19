@@ -1,6 +1,7 @@
 import UserModel from "./user.model";
 import User from "./user.interface";
 import token from "../../utils/jwt/token";
+import HttpException from "../../utils/exceptions/http.exception";
 
 class UserService{
     private user = UserModel
@@ -31,31 +32,27 @@ class UserService{
         }
     }
 
-
-
     /**
      * Service de connection d'un untilisateur
      */
-    public async login(email: string, password: string): Promise<string | Error>{
+    public async login(email: string, password: string): Promise<string | Error | void>{
 
         try {
 
             const user = await this.user.findOne({email});
 
             if(!user)
-                throw new Error("Unable to find user with this mail in database.")
+                throw new HttpException(404, "Utilisateur inexistant.")
 
-            if(await !user.isIdenticalPassword(password))
-                throw new Error("Login/Password incorrect.");
-                
+            if(!(await user.isIdenticalPassword(password)))
+                throw new HttpException(401, "Login/Password incorrect.")
+            
             return token.generateJwtToken(user);
             
-            
-        } catch (error) {
-            throw new Error("Unable to login the user");
-            
+        } catch (error: any) {
+                throw new HttpException(error.status, error.message);
         }
     }
 }
 
-export default UserService
+export default UserService;

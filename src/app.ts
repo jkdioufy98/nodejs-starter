@@ -31,7 +31,7 @@ class App {
     protected initialiseControllers(controllers: Controller[]){        
         
         controllers.forEach((controller: Controller) => {                   
-            controller.path !== "/users" ? this.app.use('/nodejs-starter-v1', authMiddleware, controller.router):this.app.use('/nodejs-starter-v1', controller.router);
+            controller.path !== "/users" ? this.app.use('/nodejs-starter-api-v1', authMiddleware, controller.router):this.app.use('/nodejs-starter-api-v1', controller.router);
         })
     }
 
