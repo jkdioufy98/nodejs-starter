@@ -41,7 +41,7 @@ async function authenticatedMiddleware(request: Request, response: Response, nex
         return next();
 
     } catch (error: any) {
-        return next(new HttpException(500, "Error in authenticated middleware ! error => "+ error));
+        next(new HttpException(error.status, error.message));
     }
 
 }

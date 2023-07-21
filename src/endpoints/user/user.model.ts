@@ -1,6 +1,7 @@
-import { Schema, model } from "mongoose";
-import User, { ERole } from "./user.interface";
+import mongoose, { Schema, model } from "mongoose";
+import User from "./user.interface";
 import bcrypt from 'bcrypt';
+import { ERole } from "../role/role.interface";
 
 const UserSchema = new Schema({
     firstName: {
@@ -37,9 +38,8 @@ const UserSchema = new Schema({
         required: true
     },
     role: {
-        type: String,
-        enum: [ERole.SUPER_ADMIN],
-        default: ERole.SUPER_ADMIN,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role',
         required: true
     },
     isActive: {
@@ -58,7 +58,7 @@ UserSchema.pre<User>('save', async function(next) {
 
     this.password = hash;
 
-    next()
+    next();
     
 })
 

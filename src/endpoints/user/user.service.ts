@@ -1,21 +1,27 @@
 import UserModel from "./user.model";
-import User from "./user.interface";
 import token from "../../utils/jwt/token";
 import HttpException from "../../utils/exceptions/http.exception";
+import GeneratedToken from "../../utils/class/GeneratedTokens";
+import roleModel from "../role/role.model";
+
 
 class UserService{
-    private user = UserModel
+    private user = UserModel;
+    private role = roleModel;
 
     /**
      * Service de création d'un nouveau utilisateur
      */
-    public async create(firstName: string,lastName: string,email: string,password: string,phone: string,address: string): Promise<User> {
+    public async create(firstName: string,lastName: string,email: string,password: string,phone: string,address: string, role: string): Promise<string> {
         try {
 
             const existUser = await this.user.findOne({email: email});
 
             if(existUser)
-                throw new Error("Un utilisateur avec cette adresse email existe déjà.");
+                throw new HttpException(409, "Un utilisateur avec cet adresse email existe déjà.")
+            
+            if(!(await this.role.findById(role)))
+                throw new HttpException(404, "Role inexistant.")
 
             const user = await this.user.create({
                 firstName,
@@ -23,19 +29,20 @@ class UserService{
                 email,
                 password,
                 phone,
-                address
+                address,
+                role
             })
 
             return user._id;
-        } catch (error) {
-            throw new Error("Unable to create the user");
+        } catch (error: any) {
+            throw new HttpException(error.status, error.message);
         }
     }
 
     /**
-     * Service de connection d'un untilisateur
+     * Service de connection d'un utilisateur
      */
-    public async login(email: string, password: string): Promise<string | Error | void>{
+    public async login(email: string, password: string): Promise<GeneratedToken>{
 
         try {
 
@@ -47,7 +54,10 @@ class UserService{
             if(!(await user.isIdenticalPassword(password)))
                 throw new HttpException(401, "Login/Password incorrect.")
             
-            return token.generateJwtToken(user);
+            const accessToken = token.generateJwtToken(user)
+            const refreshToken = token.generateRefreshToken(user)
+            
+            return new GeneratedToken(accessToken,refreshToken);
             
         } catch (error: any) {
                 throw new HttpException(error.status, error.message);

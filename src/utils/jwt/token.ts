@@ -4,9 +4,14 @@ import Token from "../interfaces/token.interface";
 import { Request } from "express";
 
 export const generateJwtToken = (user: User): string =>{
-
-    return jwt.sign({id: user._id, role:user.role},process.env.JWT_SECRET as jwt.Secret, {
+    return jwt.sign({id: user._id, role: user.role},process.env.JWT_SECRET as jwt.Secret, {
         expiresIn: '1d'
+    })
+}
+
+export const generateRefreshToken = (user: User): string => {
+    return jwt.sign({id: user._id, role: user.role}, process.env.JWT_REFRESH_ACCESS as jwt.Secret, {
+        expiresIn: '1y'
     })
 }
 
@@ -30,4 +35,4 @@ export const getTokenBearer = (request: Request): string | void => {
 
 
 
-export default { generateJwtToken, validateJwtToken }
+export default { generateJwtToken, validateJwtToken, generateRefreshToken }

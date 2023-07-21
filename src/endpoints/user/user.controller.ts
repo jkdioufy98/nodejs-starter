@@ -3,7 +3,7 @@ import validationMiddleware from "../../middlewares/validation.middleware";
 import HttpException from "../../utils/exceptions/http.exception";
 import Controller from "../../utils/interfaces/controller.interface";
 import UserService from "./user.service";
-import validate from "./user.validation";
+import validateUser from "./user.validation";
 import authMiddleware from "../../middlewares/authenticated.middleware";
 import errorMiddleware from "../../middlewares/error.middleware";
 
@@ -19,20 +19,20 @@ class UserController implements Controller{
     private initialiseRoutes(): void{
         this.router.post(
             `${this.path}`,
-            validationMiddleware(validate.register),
             authMiddleware,
+            validationMiddleware(validateUser.register),
             this.create)
         this.router.post(
             `${this.path}/signin`,
-            validationMiddleware(validate.login),
+            validationMiddleware(validateUser.login),
             this.login)
     }
 
     private create = async (request: Request, response: Response, next: NextFunction): Promise<Response | void> => {
+        const { firstName,lastName,email,password,phone, address, role } = request.body;
+        
         try {
-            const { firstName,lastName,email,password,phone, address } = request.body;
-
-            const userid = await this.userService.create(firstName,lastName,email,password,phone,address);
+            const userid = await this.userService.create(firstName,lastName,email,password,phone,address, role);
 
             response.status(201).json({
                 status: 201,
@@ -40,7 +40,7 @@ class UserController implements Controller{
             })
 
         } catch (error: any) {
-            next(new HttpException(500, "Une erreur est survenue lors de la création de l'utilisateur ! error: => " + error.message)) 
+            errorMiddleware(new HttpException(error.status, error.message), request, response, next)
         }
 
     }
@@ -49,14 +49,11 @@ class UserController implements Controller{
         try {
             const { email, password } = request.body;
 
-            const token = await this.userService.login(email, password);
+            const payloadTokens = await this.userService.login(email, password);
 
             response.status(200).json({
                 status: 200,
-                payload: {
-                    accessToken: token,
-                    refreshToken: ""
-                },
+                payload: payloadTokens,
                 message: "Utilisateur connecté avec succès."
             })
         } catch (error: any) {            

@@ -13,7 +13,3 @@ export default interface User extends Document{
     
     isIdenticalPassword(password: string): Promise<Error | boolean>;
 }
-
-export enum ERole{
-    SUPER_ADMIN = "SAD",
-}
