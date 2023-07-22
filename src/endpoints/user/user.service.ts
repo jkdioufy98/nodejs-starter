@@ -3,6 +3,7 @@ import token from "../../utils/jwt/token";
 import HttpException from "../../utils/exceptions/http.exception";
 import GeneratedToken from "../../utils/class/GeneratedTokens";
 import roleModel from "../role/role.model";
+import { ObjectId } from "mongoose";
 
 
 class UserService{
@@ -12,7 +13,7 @@ class UserService{
     /**
      * Service de création d'un nouveau utilisateur
      */
-    public async create(firstName: string,lastName: string,email: string,password: string,phone: string,address: string, role: string): Promise<string> {
+    public async create(firstName: string,lastName: string,email: string,password: string,phone: string,address: string, role: ObjectId): Promise<string> {
         try {
 
             const existUser = await this.user.findOne({email: email});
@@ -34,6 +35,7 @@ class UserService{
             })
 
             return user._id;
+            
         } catch (error: any) {
             throw new HttpException(error.status, error.message);
         }
