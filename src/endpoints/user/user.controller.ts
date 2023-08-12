@@ -6,6 +6,7 @@ import UserService from "./user.service";
 import validateUser from "./user.validation";
 import authMiddleware from "../../middlewares/authenticated.middleware";
 import errorMiddleware from "../../middlewares/error.middleware";
+import hasRoleMiddleware from "../../middlewares/hasrole.middleware";
 
 class UserController implements Controller{
     public path = "/users";

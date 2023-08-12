@@ -11,7 +11,7 @@ export const generateJwtToken = (user: User): string =>{
 
 export const generateRefreshToken = (user: User): string => {
     return jwt.sign({id: user._id, role: user.role}, process.env.JWT_REFRESH_ACCESS as jwt.Secret, {
-        expiresIn: '1y'
+        expiresIn: '1d'
     })
 }
 
@@ -28,11 +28,10 @@ export const getTokenBearer = (request: Request): string | void => {
     const bearer =  request.headers['authorization'];
 
     if(bearer?.startsWith("Bearer ")){
-        
         return bearer.split('Bearer')[1].trim();
     }
 }
 
 
 
-export default { generateJwtToken, validateJwtToken, generateRefreshToken }
+export default { generateJwtToken, validateJwtToken, generateRefreshToken };

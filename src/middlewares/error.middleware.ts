@@ -15,4 +15,4 @@ const errorMiddleware = (error: HttpException, request: Request, response: Respo
 
 }
 
-export default errorMiddleware
+export default errorMiddleware;

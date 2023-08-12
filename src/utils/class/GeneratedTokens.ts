@@ -1,4 +1,3 @@
-
 class GeneratedToken{
     accessToken: string;
     refreshToken: string;
@@ -10,3 +9,4 @@ class GeneratedToken{
 }
 
 export default GeneratedToken;
+
